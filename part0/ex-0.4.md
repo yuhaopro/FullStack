@@ -7,7 +7,7 @@ sequenceDiagram
     Note right of browser: request body {note: "hello"}
     activate server
     Note right of server: Adds new note "hello" to data.json on server
-    server-->>server: 
+    server->>server: 
     server-->>browser: Redirects browser to do a GET Request to https://studies.cs.helsinki.fi/exampleapp/notes
     deactivate server
 
