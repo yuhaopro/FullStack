@@ -3,7 +3,7 @@ const DataDisplay = ({ persons, handleDelete }) => {
     <>
       <h2>Numbers</h2>
       {persons.map((person) => {
-        console.log("KEY FOR PERSON", person)
+        {/* console.log("KEY FOR PERSON", person) */}
         return (
         <div key={person.id}>
           <p>

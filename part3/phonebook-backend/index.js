@@ -3,7 +3,7 @@ const app = express();
 
 const cors = require("cors");
 app.use(cors());
-
+app.use(express.static('dist'))
 // get the phonebook data
 let data = require("./phonebook.json");
 let morgan = require("morgan");

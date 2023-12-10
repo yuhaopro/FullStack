@@ -1,10 +1,10 @@
 import axios from "axios";
-const baseUrl = "http://localhost:3001/api/persons";
+const baseUrl = "/api/persons";
 
 const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => {
-    console.log("getAll", response.data)
+    // console.log("getAll", response.data)
     return response.data;
   });
 };
@@ -25,7 +25,7 @@ const deletePerson = (id) => {
   return request
     .then((response) => response.data)
     .catch((error) => {
-      console.log("Person is already deleted");
+      // console.log("Person is already deleted");
     });
 };
 

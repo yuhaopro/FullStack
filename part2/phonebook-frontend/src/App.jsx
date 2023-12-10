@@ -20,10 +20,10 @@ const App = () => {
       .getAll()
       .then((result) => {
         setPersons(persons.concat(result));
-        console.log("getAll fulfilled");
+        // console.log("getAll fulfilled");
       })
       .catch((err) => {
-        console.log("Unable to retrieve phonebook data");
+        // console.log("Unable to retrieve phonebook data");
       });
   }, []);
 
@@ -71,12 +71,12 @@ const App = () => {
       serverAPI
         .create({ name: newName, number: newNumber})
         .then((result) => {
-          console.log("new persons array", result)
+          // console.log("new persons array", result)
           setPersons(result);
           handleFilter(result); // Pass the updated list
         })
         .catch((err) => {
-          console.log("Did not manage to add person!", error);
+          // console.log("Did not manage to add person!", error);
         });
     }
 
@@ -85,20 +85,20 @@ const App = () => {
   };
 
   const handleDelete = (id) => {
-    console.log("handling delete");
+    // console.log("handling delete");
     // make call to database to delete resource given id
     serverAPI
       .deletePerson(id)
       .then(() => {
         setPersons(
           persons.filter((person) => {
-            console.log("person", person.id, id);
+            // console.log("person", person.id, id);
             return person.id !== id;
           })
         );
       })
       .catch((error) => {
-        console.log("error deleting user!", error);
+        // console.log("error deleting user!", error);
       });
   };
 
