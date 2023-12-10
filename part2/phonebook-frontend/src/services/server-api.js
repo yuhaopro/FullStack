@@ -16,6 +16,7 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
+//json-server is configured to use id
 const deletePerson = (id) => {
     const request = axios.delete(`${baseUrl}/${id}`);
     return request.then(response => response.data).catch(error => {console.log("Person is already deleted");})

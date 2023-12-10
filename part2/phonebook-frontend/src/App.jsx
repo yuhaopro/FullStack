@@ -47,6 +47,12 @@ const App = () => {
     setNewFilter(currentPersons.filter((person) => regex.test(person.name)));
   };
 
+  // generate id
+  const generateId = () => {
+    const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
+    return maxId + 1;
+  };
+
   // prevent redirect, and add the person name into the persons array
   const handleAddPerson = (event) => {
     // console.log("AddName");
@@ -62,9 +68,9 @@ const App = () => {
     } else if (newName === "") {
       alert("name cannot be blank!");
     } else {
-      const newPersons = persons.concat({ name: newName, number: newNumber });
+      const newPersons = persons.concat({ name: newName, number: newNumber, id: generateId()});
       serverAPI
-        .create({ name: newName, number: newNumber })
+        .create({ name: newName, number: newNumber, id: generateId()})
         .then((result) => {
           setPersons(newPersons);
           handleFilter(newPersons); // Pass the updated list
@@ -78,15 +84,21 @@ const App = () => {
     setNewNumber("");
   };
 
-  const handleDelete = (name) => {
+  const handleDelete = (id) => {
+    console.log("handling delete");
     // make call to database to delete resource given id
-    serverApi
-      .deletePerson(name)
+    serverAPI
+      .deletePerson(id)
       .then(() => {
-        setPersons(persons.filter(() => person.name !== name));
+        setPersons(
+          persons.filter((person) => {
+            console.log("person", person.id, id);
+            return person.id !== id;
+          })
+        );
       })
       .catch((error) => {
-        console.log("error deleting user!");
+        console.log("error deleting user!", error);
       });
   };
 
