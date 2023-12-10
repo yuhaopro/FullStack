@@ -47,11 +47,11 @@ const App = () => {
     setNewFilter(currentPersons.filter((person) => regex.test(person.name)));
   };
 
-  // generate id
-  const generateId = () => {
-    const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
-    return maxId + 1;
-  };
+  // // generate id
+  // const generateId = () => {
+  //   const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
+  //   return maxId + 1;
+  // };
 
   // prevent redirect, and add the person name into the persons array
   const handleAddPerson = (event) => {
@@ -68,15 +68,15 @@ const App = () => {
     } else if (newName === "") {
       alert("name cannot be blank!");
     } else {
-      const newPersons = persons.concat({ name: newName, number: newNumber, id: generateId()});
       serverAPI
-        .create({ name: newName, number: newNumber, id: generateId()})
+        .create({ name: newName, number: newNumber})
         .then((result) => {
-          setPersons(newPersons);
-          handleFilter(newPersons); // Pass the updated list
+          console.log("new persons array", result)
+          setPersons(result);
+          handleFilter(result); // Pass the updated list
         })
         .catch((err) => {
-          console.log("Did not manage to add person!");
+          console.log("Did not manage to add person!", error);
         });
     }
 

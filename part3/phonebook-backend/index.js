@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 
+const cors = require("cors");
+app.use(cors());
+
 // get the phonebook data
 let data = require("./phonebook.json");
 let morgan = require("morgan");
@@ -62,7 +65,7 @@ app.post("/api/persons", (request, response) => {
     id: generateId(),
   };
   data = data.concat(person);
-  response.json(person);
+  response.json(data);
 });
 
 const generateId = () => {
