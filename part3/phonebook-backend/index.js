@@ -69,22 +69,35 @@ app.delete("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "missing parameters",
-    });
-  }
+  // if (!body.name || !body.number) {
+  //   return response.status(400).json({
+  //     error: "missing parameters",
+  //   });
+  // }
 
   const contact = new Contact({
     name: body.name,
     number: body.number,
   });
 
-  contact.save().then((savedContact) => {
-    console.log(JSON.stringify(savedContact));
-    response.json(savedContact);
+  // check for duplicate
+  Contact.find({ name: body.name }).then((results) => {
+    if (results.length === 0) {
+      contact
+        .save()
+        .then((savedContact) => {
+          console.log(JSON.stringify(savedContact));
+          response.json(savedContact);
+        })
+        .catch((error) => next(error));
+    } else {
+      console.log(
+        "Someone tried to POST a duplicate entry directly to the server!"
+      );
+      response.send("duplicate entry!");
+    }
   });
 });
 
@@ -97,7 +110,11 @@ app.put("/api/persons/:id", (request, response, next) => {
   };
 
   // [options.new=false] «Boolean» if true, return the modified document rather than the original
-  Contact.findByIdAndUpdate(request.params.id, contact, { new: true })
+  Contact.findByIdAndUpdate(request.params.id, contact, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedContact) => {
       response.json(updatedContact);
     })
@@ -117,8 +134,11 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
+  // pass to express default error handler
   next(error);
 };
 

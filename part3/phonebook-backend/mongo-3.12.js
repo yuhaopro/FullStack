@@ -11,8 +11,8 @@ mongoose.connect(url);
 
 // defining the schema
 const contactSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: { type: String, required: true },
+  number: { type: String, required: true },
 });
 
 // defining the model
