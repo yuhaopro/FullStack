@@ -1,49 +1,60 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 
 const cors = require("cors");
 app.use(cors());
-app.use(express.static('dist'))
-// get the phonebook data
-let data = require("./phonebook.json");
+app.use(express.static("dist"));
+app.use(express.json());
+// get the phonebook model
+const Contact = require("./models/phonebook-mongo");
+
+// get the phonebook data (Removed because we are using mongodb)
+// let data = require("./phonebook.json");
 let morgan = require("morgan");
-console.log("data", data);
 /*
 Without the json-parser, the body property would be undefined. The json-parser takes the JSON data of a request, transforms it into a JavaScript object and then attaches it to the body property of the request object before the route handler is called.
 */
-app.use(express.json());
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'));
 
-morgan.token('data', function (req, res) { return JSON.stringify(req.body) })
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :data")
+);
+
+morgan.token("data", function (req, res) {
+  return JSON.stringify(req.body);
+});
 // get home page
 app.get("/", (request, response) => {
   response.redirect("/api/persons");
 });
 
 app.get("/api/persons", (request, response) => {
-  response.json(data);
+  Contact.find({}).then((contacts) => {
+    console.log(contacts);
+    response.json(contacts);
+  });
 });
 
 app.get("/info", (request, response) => {
   const date = new Date();
-  response.send(
-    `<p>Phonebook has info for ${data.length} people</p> <p>${date}</p>`
-  );
+  Contact.countDocuments({}).then((res) => {
+    console.log("countDocuments", res);
+    response.send(`<p>Phonebook has info for ${res} people</p> <p>${date}</p>`);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = data.find((person) => person.id === id);
-  if (!person) {
-    response.status(404).end();
-  }
-  response.json(person);
+  Contact.findById(request.params.id).then((contact) => {
+    console.log("ContactFound", contact);
+    response.json(contact); 
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  data = data.filter((person) => person.id !== id);
-  response.status(204).end();
+  Contact.deleteOne({ _id: request.params.id }).then((result) => {
+    response.status(204).end();
+  });
 });
 
 app.post("/api/persons", (request, response) => {
@@ -53,39 +64,25 @@ app.post("/api/persons", (request, response) => {
       error: "missing parameters",
     });
   }
-  if (isNameInPhonebook(body.name)) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
 
-  const person = {
+  const contact = new Contact({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  };
-  data = data.concat(person);
-  response.json(data);
+  });
+
+  contact.save().then((savedContact) => {
+    console.log(JSON.stringify(savedContact));
+    response.json(savedContact);
+  });
 });
 
-const generateId = () => {
-  const maxId = data.length > 0 ? Math.max(...data.map((n) => n.id)) : 0;
-  return maxId + 1;
-};
-
-const isNameInPhonebook = (name) => {
-  return data.some((person) => {
-    return person.name.toLowerCase() === name.toLowerCase();
-  });
-};
-
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
+  response.status(404).send({ error: "unknown endpoint" });
+};
 
-app.use(unknownEndpoint)
+app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

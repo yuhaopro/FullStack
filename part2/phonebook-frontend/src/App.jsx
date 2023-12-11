@@ -72,8 +72,8 @@ const App = () => {
         .create({ name: newName, number: newNumber})
         .then((result) => {
           // console.log("new persons array", result)
-          setPersons(result);
-          handleFilter(result); // Pass the updated list
+          setPersons(persons.concat(result));
+          handleFilter(persons); // Pass the updated list
         })
         .catch((err) => {
           // console.log("Did not manage to add person!", error);
