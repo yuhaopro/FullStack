@@ -24,10 +24,11 @@ app.use(
 morgan.token("data", function (req, res) {
   return JSON.stringify(req.body);
 });
+
 // get home page
-app.get("/", (request, response) => {
-  response.redirect("/api/persons");
-});
+// app.get("/", (request, response) => {
+//   response.redirect("/api/persons");
+// });
 
 app.get("/api/persons", (request, response) => {
   Contact.find({}).then((contacts) => {
@@ -44,17 +45,28 @@ app.get("/info", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  Contact.findById(request.params.id).then((contact) => {
-    console.log("ContactFound", contact);
-    response.json(contact); 
-  });
+app.get("/api/persons/:id", (request, response, next) => {
+  Contact.findById(request.params.id)
+    .then((contact) => {
+      if (contact) {
+        console.log("ContactFound", contact);
+        response.json(contact);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      // console.log(error);
+      next(error);
+    });
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  Contact.deleteOne({ _id: request.params.id }).then((result) => {
-    response.status(204).end();
-  });
+app.delete("/api/persons/:id", (request, response, next) => {
+  Contact.findByIdAndDelete(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (request, response) => {
@@ -76,12 +88,42 @@ app.post("/api/persons", (request, response) => {
   });
 });
 
+// update contact
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+  const contact = {
+    name: body.name,
+    number: body.number,
+  };
+
+  // [options.new=false] «Boolean» if true, return the modified document rather than the original
+  Contact.findByIdAndUpdate(request.params.id, contact, { new: true })
+    .then((updatedContact) => {
+      response.json(updatedContact);
+    })
+    .catch((error) => next(error));
+});
+
+// unknown endpoint handler
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 
 app.use(unknownEndpoint);
 
+// error handler
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+// this has to be the last loaded middleware.
+app.use(errorHandler);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

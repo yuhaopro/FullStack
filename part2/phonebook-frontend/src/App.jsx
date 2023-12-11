@@ -6,7 +6,6 @@ const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-  const [duplicateName, setDuplicateName] = useState(false);
   const [newFilter, setNewFilter] = useState(persons);
   const [newFilterString, setNewFilterString] = useState("");
 
@@ -56,20 +55,29 @@ const App = () => {
   // prevent redirect, and add the person name into the persons array
   const handleAddPerson = (event) => {
     // console.log("AddName");
-    setDuplicateName(false);
     event.preventDefault();
-    if (
-      persons.some((person) => {
-        return person.name.toLowerCase() === newName.toLowerCase();
-      })
-    ) {
-      setDuplicateName(true);
-      alert("name already exist!");
+    let duplicatePerson = persons.find(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+    if (duplicatePerson) {
+      serverAPI
+        .update(duplicatePerson.id, { name: newName, number: newNumber })
+        .then((result) => {
+          console.log("Succesfully updated contact");
+          const updatedPersons = persons.map((person) =>
+            person.id === duplicatePerson.id ? result : person
+          );
+          setPersons(updatedPersons);
+          handleFilter(persons); // Pass the updated list
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+        });
     } else if (newName === "") {
       alert("name cannot be blank!");
     } else {
       serverAPI
-        .create({ name: newName, number: newNumber})
+        .create({ name: newName, number: newNumber })
         .then((result) => {
           // console.log("new persons array", result)
           setPersons(persons.concat(result));
