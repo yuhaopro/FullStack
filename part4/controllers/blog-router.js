@@ -10,6 +10,16 @@ blogRouter.get("/", (request, response) => {
   });
 });
 
+// return a specific blog from the collection based on id
+blogRouter.get("/:id", async (request, response) => {
+  const id = request.params.id;
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    return response.status(404).send("blog post not found!");
+  }
+  response.json(blog);
+});
+
 // save the blog post to database and return the json
 blogRouter.post("/", async (request, response) => {
   const requiredProps = ["title", "url"];
@@ -32,6 +42,13 @@ blogRouter.post("/", async (request, response) => {
   const blog = new Blog(request.body);
   const savedBlog = await blog.save();
   response.status(201).json(savedBlog);
+});
+
+// deleting a single blog post
+blogRouter.delete("/:id", async (request, response) => {
+  const id = request.params.id;
+  await Blog.findByIdAndDelete(id);
+  return response.status(204).end();
 });
 
 module.exports = blogRouter;

@@ -33,58 +33,95 @@ beforeEach(async () => {
   }
 });
 
-// test cases
-test("number of notes returned correctly", async () => {
-  const response = await api.get("/api/blogs");
-  expect(response.body).toHaveLength(initialBlogs.length);
+describe("2 notes stored in db", () => {
+  // test cases
+  test("number of notes returned correctly", async () => {
+    const response = await api.get("/api/blogs");
+    expect(response.body).toHaveLength(initialBlogs.length);
+  });
+
+  test("id property exists", async () => {
+    const response = await api.get("/api/blogs");
+    for (const blog of response.body) {
+      console.log("object obtained", blog);
+      expect(blog.id).toBeDefined();
+    }
+  });
 });
 
-test("id property exists", async () => {
-  const response = await api.get("/api/blogs");
-  for (const blog of response.body) {
-    console.log("object obtained", blog);
-    expect(blog.id).toBeDefined();
-  }
+describe("blog creation", () => {
+  // new blog to be added
+  const newBlog = {
+    title: "puppy",
+    author: "johnny",
+    url: "john.com",
+    likes: 145,
+  };
+
+  test("blog created correctly", async () => {
+    // create blog
+    await api.post("/api/blogs").send(newBlog);
+    const response = await api.get("/api/blogs");
+    // console.log("body length", response.body.length);
+    expect(response.body).toHaveLength(initialBlogs.push(newBlog));
+  });
+
+  const missingLikesBlog = {
+    title: "snooch",
+    author: "qwq",
+    url: "aaa.com",
+  };
+
+  test("likes property missing during post", async () => {
+    const response = await api.post("/api/blogs").send(missingLikesBlog);
+    expect(response.body.likes).toBeDefined();
+    expect(response.body.likes).toBe(0);
+  });
+
+  const missingTitleAndUrlBlog = {
+    author: "bruh",
+  };
+
+  test("missing title and url", async () => {
+    const response = await api
+      .post("/api/blogs")
+      .send(missingTitleAndUrlBlog)
+      .expect(400);
+    console.log(response);
+  });
 });
 
-// new blog to be added
-const newBlog = {
-  title: "puppy",
-  author: "johnny",
-  url: "john.com",
-  likes: 145,
-};
+describe("delete blog", () => {
+  test("delete blog correctly", async () => {
+    // get the blog to delete
+    const intiialResponse = await api.get("/api/blogs");
+    const blogs = intiialResponse.body;
+    expect(blogs.length).toBeGreaterThan(0); // Ensure there is at least one blog to delete
+    const blogToDelete = blogs[0];
+    console.log("blogToDelete", blogToDelete);
 
-test("blog created correctly", async () => {
-  // create blog
-  await api.post("/api/blogs").send(newBlog);
-  const response = await api.get("/api/blogs");
-  // console.log("body length", response.body.length);
-  expect(response.body).toHaveLength(initialBlogs.push(newBlog));
+    const response = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204);
+    await api.get(`/api/blogs/${blogToDelete.id}`).expect(404);
+  }, 100000);
 });
 
-const missingLikesBlog = {
-  title: "snooch",
-  author: "qwq",
-  url: "aaa.com",
-};
+describe("update blog", () => {
+  test("update likes", async () => {
+    // defined the property to update
+    const updatedBlog = {likes: 1}
+    // get the blog to update
+    const intiialResponse = await api.get("/api/blogs");
+    const blogs = intiialResponse.body;
+    expect(blogs.length).toBeGreaterThan(0); // Ensure there is at least one blog to delete
+    const blogToUpdate = blogs[0];
+    console.log("blogToUpdate", blogToUpdate);
+    await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlog).expect(200);
 
-test("likes property missing during post", async () => {
-  const response = await api.post("/api/blogs").send(missingLikesBlog);
-  expect(response.body.likes).toBeDefined();
-  expect(response.body.likes).toBe(0);
-});
-
-const missingTitleAndUrlBlog = {
-  author: "bruh",
-};
-
-test("missing title and url", async () => {
-  const response = await api
-    .post("/api/blogs")
-    .send(missingTitleAndUrlBlog)
-    .expect(400);
-  console.log(response);
+    const response = await api.get(`/api/blogs/${blogToUpdate.id}`);
+    expect(response.body.likes).toBe(1);
+  });
 });
 
 afterAll(async () => {
