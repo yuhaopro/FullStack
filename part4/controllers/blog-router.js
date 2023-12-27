@@ -6,7 +6,7 @@ const Blog = require("../models/blog");
 // return the entire blog collection from database
 blogRouter.get("/", (request, response) => {
   Blog.find({}).then((blogs) => {
-    response.json(blogs);
+  response.json(blogs);
   });
 });
 

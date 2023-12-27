@@ -29,7 +29,6 @@ const mostBlogs = (blogs) => {
   let mostBlogsObj = Lodash.maxBy(blogs, "blogs");
   return {author:mostBlogsObj.author, blogs:mostBlogsObj.blogs}
 };
-
 module.exports = {
   dummy,
   totalLikes,
