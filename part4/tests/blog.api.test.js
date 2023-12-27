@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
+const { initial } = require("lodash");
 const api = supertest(app);
 // define starting state
 const initialBlogs = [
@@ -33,10 +34,17 @@ beforeEach(async () => {
 });
 
 // test cases
-
 test("number of notes returned correctly", async () => {
   const response = await api.get("/api/blogs");
   expect(response.body).toHaveLength(initialBlogs.length);
+});
+
+test("id property exists", async () => {
+  const response = await api.get("/api/blogs");
+  for (const blog of response.body) {
+    console.log("object obtained", blog);
+    expect(blog.id).toBeDefined();
+  }
 });
 
 afterAll(async () => {
