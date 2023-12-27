@@ -47,6 +47,22 @@ test("id property exists", async () => {
   }
 });
 
+// new blog to be added
+const newBlog = {
+  title: "puppy",
+  author: "johnny",
+  url: "john.com",
+  likes: 145,
+};
+
+test("blog created correctly", async () => {
+  // create blog
+  await api.post("/api/blogs").send(newBlog);
+  const response = await api.get("/api/blogs");
+  // console.log("body length", response.body.length);
+  expect(response.body).toHaveLength(initialBlogs.push(newBlog));
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
