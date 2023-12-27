@@ -63,6 +63,30 @@ test("blog created correctly", async () => {
   expect(response.body).toHaveLength(initialBlogs.push(newBlog));
 });
 
+const missingLikesBlog = {
+  title: "snooch",
+  author: "qwq",
+  url: "aaa.com",
+};
+
+test("likes property missing during post", async () => {
+  const response = await api.post("/api/blogs").send(missingLikesBlog);
+  expect(response.body.likes).toBeDefined();
+  expect(response.body.likes).toBe(0);
+});
+
+const missingTitleAndUrlBlog = {
+  author: "bruh",
+};
+
+test("missing title and url", async () => {
+  const response = await api
+    .post("/api/blogs")
+    .send(missingTitleAndUrlBlog)
+    .expect(400);
+  console.log(response);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
