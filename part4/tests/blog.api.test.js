@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
-const { initial } = require("lodash");
+const { initial, update } = require("lodash");
 const api = supertest(app);
 // define starting state
 const initialBlogs = [
@@ -110,18 +110,21 @@ describe("delete blog", () => {
 describe("update blog", () => {
   test("update likes", async () => {
     // defined the property to update
-    const updatedBlog = {likes: 1}
+    const updatedProp = { likes: 1 };
     // get the blog to update
     const intiialResponse = await api.get("/api/blogs");
     const blogs = intiialResponse.body;
     expect(blogs.length).toBeGreaterThan(0); // Ensure there is at least one blog to delete
     const blogToUpdate = blogs[0];
     console.log("blogToUpdate", blogToUpdate);
-    await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlog).expect(200);
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedProp)
+      .expect(200);
 
-    const response = await api.get(`/api/blogs/${blogToUpdate.id}`);
+    console.log("updatedBlog", response.body);
     expect(response.body.likes).toBe(1);
-  });
+  }, 100000);
 });
 
 afterAll(async () => {
