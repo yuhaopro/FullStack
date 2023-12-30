@@ -104,7 +104,7 @@ describe("delete blog", () => {
       .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204);
     await api.get(`/api/blogs/${blogToDelete.id}`).expect(404);
-  }, 100000);
+  });
 });
 
 describe("update blog", () => {

@@ -1,4 +1,5 @@
 const Lodash = require("lodash");
+const User = require("../models/user");
 
 const dummy = (blogs) => {
   // ...
@@ -27,11 +28,19 @@ const mostLikes = (blogs) => {
 
 const mostBlogs = (blogs) => {
   let mostBlogsObj = Lodash.maxBy(blogs, "blogs");
-  return {author:mostBlogsObj.author, blogs:mostBlogsObj.blogs}
+  return { author: mostBlogsObj.author, blogs: mostBlogsObj.blogs };
 };
+
+const allUsers = async () => {
+  const users = await User.find({});
+  // convert all the documents to json format
+  return users.map((u) => u.toJSON());
+};
+
 module.exports = {
   dummy,
   totalLikes,
   mostLikes,
-  mostBlogs
+  mostBlogs,
+  allUsers,
 };

@@ -1,13 +1,13 @@
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 // only relative path is specified, ancestor path defined in app.js
 
 // return the entire blog collection from database
-blogRouter.get("/", (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs);
-  });
+blogRouter.get("/", async (request, response) => {
+  const blogs = await Blog.find({});
+  response.json(blogs);
 });
 
 // return a specific blog from the collection based on id
@@ -22,7 +22,8 @@ blogRouter.get("/:id", async (request, response) => {
 
 // save the blog post to database and return the json
 blogRouter.post("/", async (request, response) => {
-  const requiredProps = ["title", "url"];
+  // expecting a userid field
+  const requiredProps = ["title", "url", "userId"];
   const missingRequiredProps = [];
   for (const prop of requiredProps) {
     if (!request.body.hasOwnProperty(prop)) {
@@ -39,8 +40,18 @@ blogRouter.post("/", async (request, response) => {
   if (!request.body.hasOwnProperty("likes")) {
     request.body.likes = 0;
   }
-  const blog = new Blog(request.body);
+
+  const user = await User.findById(request.body.userId);
+  const blog = new Blog({
+    title: request.body.title,
+    author: request.body.author,
+    url: request.body.url,
+    likes: request.body.likes,
+    user: user.id,
+  });
   const savedBlog = await blog.save();
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
   response.status(201).json(savedBlog);
 });
 
