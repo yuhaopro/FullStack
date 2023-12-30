@@ -3,6 +3,7 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
+const logger = require("../utils/logger");
 
 // only relative path is specified, ancestor path defined in app.js
 
@@ -22,18 +23,10 @@ blogRouter.get("/:id", async (request, response) => {
   response.json(blog);
 });
 
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer ")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
-
 // save the blog post to database and return the json
 blogRouter.post("/", async (request, response) => {
   // decode token
-  const decodedToken = jwt.verify(getTokenFrom(request), config.SECRET);
+  const decodedToken = jwt.verify(request.token, config.SECRET);
 
   // check if token valid
   if (!decodedToken.id) {
@@ -75,8 +68,31 @@ blogRouter.post("/", async (request, response) => {
 // deleting a single blog post
 blogRouter.delete("/:id", async (request, response) => {
   const id = request.params.id;
-  await Blog.findByIdAndDelete(id);
-  return response.status(204).end();
+  // find the user that owns this blog
+  const blog = await Blog.findById(id);
+
+  // get the user of this blog
+  const blogUserId = blog.user.toString();
+
+  // check if this matches with the user trying to delete the blog
+  // get the accessing user
+  // decode token
+  const decodedToken = jwt.verify(request.token, config.SECRET);
+
+  // check if token valid
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+  const user = await User.findById(decodedToken.id);
+  if (blogUserId === user._id.toString()) {
+    // correct user proceed to delete.
+    await blog.deleteOne();
+    return response.status(204).end();
+  } else {
+    return response
+      .status(401)
+      .json({ error: "You are not the owner of the blog post!" });
+  }
 });
 
 // update single blog post
