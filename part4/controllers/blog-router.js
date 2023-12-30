@@ -25,15 +25,7 @@ blogRouter.get("/:id", async (request, response) => {
 
 // save the blog post to database and return the json
 blogRouter.post("/", async (request, response) => {
-  // decode token
-  const decodedToken = jwt.verify(request.token, config.SECRET);
 
-  // check if token valid
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: "token invalid" });
-  }
-
-  const user = await User.findById(decodedToken.id);
   const requiredProps = ["title", "url"];
   const missingRequiredProps = [];
   for (const prop of requiredProps) {
@@ -73,18 +65,7 @@ blogRouter.delete("/:id", async (request, response) => {
 
   // get the user of this blog
   const blogUserId = blog.user.toString();
-
-  // check if this matches with the user trying to delete the blog
-  // get the accessing user
-  // decode token
-  const decodedToken = jwt.verify(request.token, config.SECRET);
-
-  // check if token valid
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: "token invalid" });
-  }
-  const user = await User.findById(decodedToken.id);
-  if (blogUserId === user._id.toString()) {
+  if (blogUserId === request.user._id.toString()) {
     // correct user proceed to delete.
     await blog.deleteOne();
     return response.status(204).end();
