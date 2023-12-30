@@ -11,8 +11,20 @@ userRouter.get("/", async (request, response) => {
 
 userRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
+
+  // password validation here because mongo is storing passwordHash and thus cannot validate
+  if (!password) {
+    return response.status(400).json({error: "Password is required!"});
+  }
+
+  if (password.length < 3) {
+    return response.status(400).json({error: "Password must be longer than 3 characters!"})
+  }  
+  
   const saltRounds = 5;
   const passwordHash = await bycrypt.hash(password, saltRounds);
+
+
 
   const user = new User({
     username,

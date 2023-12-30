@@ -8,10 +8,6 @@ const { initial } = require("lodash");
 const mongoose = require("mongoose");
 const config = require("../utils/config");
 
-let server;
-beforeAll(() => {
-  server = app.listen(config.PORT);
-});
 
 describe("initially one user in db", () => {
   beforeEach(async () => {
@@ -61,6 +57,86 @@ describe("initially one user in db", () => {
       .expect("Content-Type", /application\/json/);
 
     expect(result.body.error).toContain("expected `username` to be unique");
+    const usersAtEnd = await Helper.allUsers();
+    expect(usersAtEnd).toEqual(usersAtStart);
+  });
+
+  test("no password", async () => {
+    const usersAtStart = await Helper.allUsers();
+    // Add one User into collection
+    const newUser = {
+      username: "shit",
+      name: "shit",
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+    
+    console.log("ERROR", result.body.error)
+
+    expect(result.body.error).toContain("Password is required!");
+    const usersAtEnd = await Helper.allUsers();
+    expect(usersAtEnd).toEqual(usersAtStart);
+  });
+
+  test("password length < 3", async () => {
+    const usersAtStart = await Helper.allUsers();
+    // Add one User into collection
+    const newUser = {
+      username: "root",
+      name: "root",
+      password: "12"
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    expect(result.body.error).toContain("Password must be longer than 3 characters!");
+    const usersAtEnd = await Helper.allUsers();
+    expect(usersAtEnd).toEqual(usersAtStart);
+  });
+
+  test("no username", async () => {
+    const usersAtStart = await Helper.allUsers();
+    // Add one User into collection
+    const newUser = {
+      name: "root",
+      password: "123"
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    expect(result.body.error).toContain("Username is required!");
+    const usersAtEnd = await Helper.allUsers();
+    expect(usersAtEnd).toEqual(usersAtStart);
+  });
+
+  test("username length < 3", async () => {
+    const usersAtStart = await Helper.allUsers();
+    // Add one User into collection
+    const newUser = {
+      username: "ro",
+      name: "root123",
+      password: "123"
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    expect(result.body.error).toContain("Username must be at least 3 characters long!");
     const usersAtEnd = await Helper.allUsers();
     expect(usersAtEnd).toEqual(usersAtStart);
   });

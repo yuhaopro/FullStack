@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 // return the entire blog collection from database
 blogRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user', {username: 1, user: 1});
   response.json(blogs);
 });
 
