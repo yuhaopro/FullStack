@@ -1,12 +1,14 @@
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const config = require("../utils/config");
 
 // only relative path is specified, ancestor path defined in app.js
 
 // return the entire blog collection from database
 blogRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', {username: 1, user: 1});
+  const blogs = await Blog.find({}).populate("user", { username: 1, user: 1 });
   response.json(blogs);
 });
 
@@ -20,10 +22,26 @@ blogRouter.get("/:id", async (request, response) => {
   response.json(blog);
 });
 
+const getTokenFrom = (request) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.startsWith("Bearer ")) {
+    return authorization.replace("Bearer ", "");
+  }
+  return null;
+};
+
 // save the blog post to database and return the json
 blogRouter.post("/", async (request, response) => {
-  // expecting a userid field
-  const requiredProps = ["title", "url", "userId"];
+  // decode token
+  const decodedToken = jwt.verify(getTokenFrom(request), config.SECRET);
+
+  // check if token valid
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+
+  const user = await User.findById(decodedToken.id);
+  const requiredProps = ["title", "url"];
   const missingRequiredProps = [];
   for (const prop of requiredProps) {
     if (!request.body.hasOwnProperty(prop)) {
@@ -41,13 +59,12 @@ blogRouter.post("/", async (request, response) => {
     request.body.likes = 0;
   }
 
-  const user = await User.findById(request.body.userId);
   const blog = new Blog({
     title: request.body.title,
     author: request.body.author,
     url: request.body.url,
     likes: request.body.likes,
-    user: user.id,
+    user: user._id,
   });
   const savedBlog = await blog.save();
   user.blogs = user.blogs.concat(savedBlog._id);
