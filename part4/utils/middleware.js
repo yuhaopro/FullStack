@@ -33,6 +33,7 @@ const errorHandler = (error, request, response, next) => {
 };
 
 const tokenExtractor = (request, response, next) => {
+  // logger.info("Request in tokenExtractor", request);
   const authorization = request.get("authorization");
   if (authorization && authorization.startsWith("Bearer ")) {
     request.token = authorization.replace("Bearer ", "");
@@ -41,6 +42,11 @@ const tokenExtractor = (request, response, next) => {
 };
 
 const userExtractor = async (request, response, next) => {
+
+  if (!request.token) {
+    return response.status(401).json({ error: "token missing" });
+  }
+  
   const decodedToken = jwt.verify(request.token, config.SECRET);
 
   // check if token valid

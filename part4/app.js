@@ -31,9 +31,7 @@ app.use(express.static("dist"));
 // for content.body
 app.use(express.json());
 app.use(middleware.requestLogger);
-app.use(middleware.tokenExtractor);
-
-app.use("/api/blogs", middleware.userExtractor, blogRouter);
+app.use("/api/blogs", middleware.tokenExtractor, middleware.userExtractor, blogRouter);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 

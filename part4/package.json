@@ -18,7 +18,9 @@
   "scripts": {
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "build": "rm -rf dist && cd ../part5/bloglist-frontend/ && npm run build && cp -r dist ../../part4",
+    "deploy": "npm run build && npm run dev"
   },
   "author": "Zhu Yu Hao",
   "license": "ISC",
