@@ -9,19 +9,29 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // get local storage user session if it exists for the first time.
+  useEffect(() => {
+    const userJSON = window.localStorage.getItem("user");
+    if (userJSON) {
+      const user = JSON.parse(userJSON);
+      blogService.setToken(user.token);
+      setUser(user);
+    }
+  }, []);
   // at start get all blog objects
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, [user]);
 
-
-
   const handleLogin = async (username, password) => {
     try {
-      // Assume loginService.login is an API call
+      // loginService.login is an API call
       const user = await loginService.login({ username, password });
-      blogService.setToken(user.token)
 
+      // saved to browser for caching
+      window.localStorage.setItem("user", JSON.stringify(user));
+
+      blogService.setToken(user.token);
       setUser(user);
     } catch (error) {
       setErrorMessage("Wrong Credentials");
@@ -31,6 +41,12 @@ const App = () => {
     }
   };
 
+  const handleLogOut = () => {
+    window.localStorage.clear();
+    setUser(null);
+
+  }
+
   return (
     <div>
       {errorMessage && <p>{errorMessage}</p>}
@@ -39,7 +55,9 @@ const App = () => {
       ) : (
         <div>
           <h2>Blogs</h2>
-          <p>{user.username} logged in</p>
+          <p>
+          {user.username} logged in <button onClick={handleLogOut}>logout</button>
+          </p>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
