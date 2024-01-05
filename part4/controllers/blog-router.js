@@ -25,7 +25,6 @@ blogRouter.get("/:id", async (request, response) => {
 
 // save the blog post to database and return the json
 blogRouter.post("/", async (request, response) => {
-
   const requiredProps = ["title", "url"];
   const missingRequiredProps = [];
   for (const prop of requiredProps) {
@@ -43,17 +42,17 @@ blogRouter.post("/", async (request, response) => {
   if (!request.body.hasOwnProperty("likes")) {
     request.body.likes = 0;
   }
-
+  // logger.info("request struct", request);
   const blog = new Blog({
     title: request.body.title,
     author: request.body.author,
     url: request.body.url,
     likes: request.body.likes,
-    user: user._id,
+    user: request.user._id,
   });
   const savedBlog = await blog.save();
-  user.blogs = user.blogs.concat(savedBlog._id);
-  await user.save();
+  request.user.blogs = request.user.blogs.concat(savedBlog._id);
+  await request.user.save();
   response.status(201).json(savedBlog);
 });
 
