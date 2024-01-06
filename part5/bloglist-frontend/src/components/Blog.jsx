@@ -8,14 +8,14 @@ const Blog = ({ blog, onLike, onRemove }) => {
     // show the blog url, likes and user who posted
     setVisible(!visible);
   };
-  
+
   const handleLike = async () => {
     await onLike(blog.likes, blog.id);
-  }
+  };
 
   const handleRemove = async () => {
     await onRemove(blog.id);
-  }
+  };
   return (
     <div>
       {blog.title} {blog.author}{" "}
@@ -36,6 +36,7 @@ const Blog = ({ blog, onLike, onRemove }) => {
 
 Blog.propTypes = {
   blog: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     author: PropTypes.string,
     url: PropTypes.string.isRequired,
@@ -45,6 +46,8 @@ Blog.propTypes = {
       username: PropTypes.string.isRequired,
     }),
   }).isRequired,
+  onLike: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
 };
 
 export default Blog;
