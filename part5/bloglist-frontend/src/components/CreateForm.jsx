@@ -1,6 +1,5 @@
 import { useState } from "react";
-
-// create createForm React Component
+import PropTypes from "prop-types";
 const CreateForm = ({ onCreate }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -20,7 +19,7 @@ const CreateForm = ({ onCreate }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     // validate input here
     await onCreate(title, author, url);
     setTitle("");
@@ -32,31 +31,22 @@ const CreateForm = ({ onCreate }) => {
     <form onSubmit={handleSubmit}>
       <div>
         <label>Title:</label>
-        <input
-          type="text"
-          value={title}
-          onChange={handleTitleChange}
-        ></input>
+        <input type="text" value={title} onChange={handleTitleChange}></input>
       </div>
       <div>
         <label>Author:</label>
-        <input
-          type="text"
-          value={author}
-          onChange={handleAuthorChange}
-        ></input>
+        <input type="text" value={author} onChange={handleAuthorChange}></input>
       </div>
       <div>
         <label>Url:</label>
-        <input
-          type="text"
-          value={url}
-          onChange={handleUrlChange}
-        ></input>
+        <input type="text" value={url} onChange={handleUrlChange}></input>
       </div>
       <button type="submit">Create</button>
     </form>
   );
 };
 
+CreateForm.propTypes = {
+  onCreate: PropTypes.func.isRequired,
+};
 export default CreateForm;
