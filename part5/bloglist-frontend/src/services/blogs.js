@@ -9,34 +9,33 @@ const setToken = (newToken) => {
   // console.log("token", token)
 };
 
+const getConfig = () => ({
+  headers: { Authorization: token },
+});
+
 // get blogs
 const getAll = async () => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.get(baseUrl, config);
+  const response = await axios.get(baseUrl, getConfig());
   return response.data;
 };
 
 // create blog
 const create = async (newObject) => {
-
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.post(baseUrl, newObject, config);
+  const response = await axios.post(baseUrl, newObject, getConfig());
   // console.log("response",response.data);
   return response.data;
 };
 
 // update blog
 const update = async (id, newObject) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.put(`${baseUrl}/${id}`, newObject, config);
-  console.log(response.data);
+  const response = await axios.put(`${baseUrl}/${id}`, newObject, getConfig());
+  // console.log(response.data);
   return response.data;
 };
 
-export default { getAll, create, update, setToken };
+const deleteBlog = async (id) => {
+  const response = await axios.delete(`${baseUrl}/${id}`, getConfig());
+  return response.data;
+};
+
+export default { getAll, create, update, deleteBlog, setToken };

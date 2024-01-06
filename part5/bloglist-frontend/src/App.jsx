@@ -15,7 +15,7 @@ const App = () => {
       createFormRef.current.toggleVisiblity();
     }
   }
-  const { blogs, handleCreate, handleLike } = useBlogs(user, setMessage, closeCreateForm);
+  const { blogs, handleCreate, handleLike, handleRemove } = useBlogs(user, setMessage, closeCreateForm);
   return (
     <div>
       {message && <p>{message}</p>}
@@ -29,7 +29,7 @@ const App = () => {
             <button onClick={handleLogOut}>logout</button>
           </p>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} onLike={handleLike}/>
+            <Blog key={blog.id} blog={blog} onLike={handleLike} onRemove={handleRemove}/>
           ))}
           <h2>create new</h2>
           <Togglable buttonText="new blog" ref={createFormRef}>

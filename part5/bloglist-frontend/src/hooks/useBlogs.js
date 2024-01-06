@@ -69,7 +69,28 @@ const useBlogs = (user, setMessage, closeTheForm) => {
     }
   };
 
-  return { blogs, handleCreate, handleLike };
+  const handleRemove = async (id) => {
+    try {
+      const response = await blogService.deleteBlog(id);
+      console.log(response);
+      if (response.error) {
+        console.log(response.error);
+        setMessage(response.error);
+        return;
+      } else {
+        const updatedBlogs = blogs.filter((blog) => blog.id !== id);
+        console.log(updatedBlogs);
+        sortBlogsAndUpdate(updatedBlogs);
+      }
+    } catch (error) {
+      setMessage(error);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    }
+  };
+
+  return { blogs, handleCreate, handleLike, handleRemove };
 };
 
 export default useBlogs;
