@@ -29,7 +29,7 @@ const useBlogs = (user, setMessage, closeTheForm) => {
         url: url,
       };
       const createdBlog = await blogService.create({ title, author, url });
-      console.log(createdBlog);
+    //   console.log(createdBlog);
       setBlogs(blogs.concat(createdBlog));
       setMessage(
         `A new blog ${blogObject.title} by ${blogObject.author} added!`
@@ -43,8 +43,28 @@ const useBlogs = (user, setMessage, closeTheForm) => {
       }, 5000);
     }
   };
+  const handleLike = async (originalLikes, id) => {
+    const updatedLikes = {
+      likes: originalLikes + 1,
+    };
+    console.log(updatedLikes);
+    try {
+      const updatedBlog = await blogService.update(id, updatedLikes);
+      console.log(updatedBlog);
+      const updatedBlogs = blogs.map((blog) =>
+        blog.id === updatedBlog.id ? updatedBlog : blog
+      );
+      setBlogs(updatedBlogs);
+    } catch (error) {
+      setMessage(error);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    }
+  };
 
-  return { blogs, handleCreate };
+
+  return { blogs, handleCreate, handleLike };
 };
 
 export default useBlogs;

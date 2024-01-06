@@ -1,14 +1,17 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, onLike }) => {
   const [visible, setVisible] = useState(false);
 
   const toggleVisiblity = () => {
     // show the blog url, likes and user who posted
     setVisible(!visible);
   };
-
+  
+  const handleLike = async () => {
+    await onLike(blog.likes, blog.id);
+  }
   return (
     <div>
       {blog.title} {blog.author}{" "}
@@ -17,6 +20,7 @@ const Blog = ({ blog }) => {
         <div>
           <p>{blog.url}</p>
           <p>likes {blog.likes}</p>
+          <button onClick={handleLike}>like</button>
           <p>{blog.user.username}</p>
           <button onClick={toggleVisiblity}>cancel</button>
         </div>
