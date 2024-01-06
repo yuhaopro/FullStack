@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import blogService from "../services/blogs";
-const useBlogs = (user, setMessage) => {
+const useBlogs = (user, setMessage, closeTheForm) => {
   const [blogs, setBlogs] = useState([]);
   // at start get all blog objects
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, [user, blogs]);
+  }, [user]);
 
   const handleCreate = async (title, author, url) => {
     // input blank check
@@ -28,6 +28,8 @@ const useBlogs = (user, setMessage) => {
       setMessage(
         `A new blog ${blogObject.title} by ${blogObject.author} added!`
       );
+      // close the create form
+      closeTheForm();
     } catch (error) {
       setMessage(error);
       setTimeout(() => {

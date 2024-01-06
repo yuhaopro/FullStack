@@ -3,12 +3,19 @@ import LoginForm from "./components/LoginForm";
 import CreateForm from "./components/CreateForm";
 import useAuth from "./hooks/useAuth";
 import useBlogs from "./hooks/useBlogs";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [message, setMessage] = useState(null);
   const { user, handleLogin, handleLogOut } = useAuth(setMessage);
-  const { blogs, handleCreate } = useBlogs(user, setMessage);
+  const createFormRef = useRef();
+  const closeCreateForm = () => {
+    if (createFormRef.current && createFormRef.current.toggleVisiblity) {
+      createFormRef.current.toggleVisiblity();
+    }
+  };
+  const { blogs, handleCreate } = useBlogs(user, setMessage, closeCreateForm);
   return (
     <div>
       {message && <p>{message}</p>}
@@ -18,14 +25,16 @@ const App = () => {
         <div>
           <h2>Blogs</h2>
           <p>
-            {user.username} logged in{" "}
+            {user.username} logged in
             <button onClick={handleLogOut}>logout</button>
           </p>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
           <h2>create new</h2>
-          <CreateForm onCreate={handleCreate}></CreateForm>
+          <Togglable buttonText="new blog" ref={createFormRef}>
+            <CreateForm onCreate={handleCreate}></CreateForm>
+          </Togglable>
         </div>
       )}
     </div>
