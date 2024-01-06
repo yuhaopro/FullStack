@@ -5,12 +5,11 @@ const useBlogs = (user, setMessage, closeTheForm) => {
   // at start get all blog objects
   useEffect(() => {
     async function fetchBlogs() {
-        const blogs = await blogService.getAll();
-        console.log(blogs);
-        setBlogs(blogs);        
+      const blogs = await blogService.getAll();
+      console.log(blogs);
+      setBlogs(blogs);
     }
     fetchBlogs();
-
   }, [user]);
 
   const handleCreate = async (title, author, url) => {
@@ -30,7 +29,8 @@ const useBlogs = (user, setMessage, closeTheForm) => {
         url: url,
       };
       const createdBlog = await blogService.create({ title, author, url });
-      setBlogs(blogs.concat(JSON.stringify(createdBlog)));
+      console.log(createdBlog);
+      setBlogs(blogs.concat(createdBlog));
       setMessage(
         `A new blog ${blogObject.title} by ${blogObject.author} added!`
       );
