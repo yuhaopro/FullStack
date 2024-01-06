@@ -4,7 +4,13 @@ const useBlogs = (user, setMessage, closeTheForm) => {
   const [blogs, setBlogs] = useState([]);
   // at start get all blog objects
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    async function fetchBlogs() {
+        const blogs = await blogService.getAll();
+        console.log(blogs);
+        setBlogs(blogs);        
+    }
+    fetchBlogs();
+
   }, [user]);
 
   const handleCreate = async (title, author, url) => {

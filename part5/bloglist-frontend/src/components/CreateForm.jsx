@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import Togglable from "./Togglable";
-const CreateForm = ({ onCreate, toggleVisiblity }) => {
+const CreateForm = ({ onCreate }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -26,7 +26,6 @@ const CreateForm = ({ onCreate, toggleVisiblity }) => {
     setTitle("");
     setAuthor("");
     setUrl("");
-    toggleVisiblity();
   };
 
   return (

@@ -14,7 +14,7 @@ const App = () => {
     if (createFormRef.current && createFormRef.current.toggleVisiblity) {
       createFormRef.current.toggleVisiblity();
     }
-  };
+  }
   const { blogs, handleCreate } = useBlogs(user, setMessage, closeCreateForm);
   return (
     <div>
@@ -33,7 +33,7 @@ const App = () => {
           ))}
           <h2>create new</h2>
           <Togglable buttonText="new blog" ref={createFormRef}>
-            <CreateForm onCreate={handleCreate}></CreateForm>
+            <CreateForm onCreate={handleCreate} ></CreateForm>
           </Togglable>
         </div>
       )}

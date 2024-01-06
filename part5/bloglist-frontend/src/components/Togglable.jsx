@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 import PropTypes from "prop-types";
-const Togglable = forwardRef((props, refs) => {
+const Togglable = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
 
   const toggleVisiblity = () => {
@@ -8,7 +8,7 @@ const Togglable = forwardRef((props, refs) => {
   };
 
   // to expose the function toggle Visibility to the refs
-  useImperativeHandle(refs, (() => {
+  useImperativeHandle(ref, (() => {
     return {toggleVisiblity};
   }))
 
