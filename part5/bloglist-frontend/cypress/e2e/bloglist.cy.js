@@ -31,9 +31,7 @@ describe("Blog website", () => {
 
   describe("when logged in", () => {
     beforeEach(() => {
-      cy.get("#username").type("john");
-      cy.get("#password").type("12345");
-      cy.get("#submit-button").click();
+      cy.login({ username: "john", password: "12345" });
     });
 
     it("Create blog", () => {
@@ -43,6 +41,22 @@ describe("Blog website", () => {
       cy.get("#url").type("jamesclear.com");
       cy.get("#create-blog-submit").click();
       cy.contains("Atomic Habits James Clear");
+    });
+
+    describe("when blogs are created", () => {
+      // using custom commands defined in support/commands.js for creating blogs
+      beforeEach(() => {
+        cy.createForm({
+          title: "Thinking Fast and Slow",
+          author: "Daniel Khaneman",
+          url: "thinkingfastandslow.com",
+        });
+      });
+      it("Like blog", () => {
+        cy.contains("view").click();
+        cy.get("#likesButton").click();
+        cy.contains("likes 1");
+      });
     });
   });
 });
