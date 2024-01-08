@@ -15,12 +15,12 @@ const App = () => {
       createFormRef.current.toggleVisiblity();
     }
   }
-  const { blogs, handleCreate, handleLike, handleRemove } = useBlogs(user, setMessage, closeCreateForm);
+  const { blogs, handleCreate, handleLike, handleRemove, fetchBlogs } = useBlogs(user, setMessage, closeCreateForm);
   return (
     <div>
       {message && <p>{message}</p>}
       {user === null ? (
-        <LoginForm onLogin={handleLogin} />
+        <LoginForm onLogin={handleLogin} onFetchBlogs={fetchBlogs}/>
       ) : (
         <div>
           <h2>Blogs</h2>

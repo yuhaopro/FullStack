@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const blogRouter = require("./controllers/blog-router");
 const userRouter = require("./controllers/user-router");
 const loginRouter = require("./controllers/login-router");
+const testingRouter = require("./controllers/testing-router");
 
 // it ensures that values passed to a model's constructor that were not specified in the schema also gets saved to the database.
 mongoose.set("strictQuery", false);
@@ -31,9 +32,17 @@ app.use(express.static("dist"));
 // for content.body
 app.use(express.json());
 app.use(middleware.requestLogger);
-app.use("/api/blogs", middleware.tokenExtractor, middleware.userExtractor, blogRouter);
+app.use(
+  "/api/blogs",
+  middleware.tokenExtractor,
+  middleware.userExtractor,
+  blogRouter
+);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
+if (process.env.NODE_ENV === "test") {
+  app.use("/api/test", testingRouter);
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

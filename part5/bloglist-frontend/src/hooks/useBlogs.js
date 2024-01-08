@@ -8,14 +8,12 @@ const useBlogs = (user, setMessage, closeTheForm) => {
     setBlogs(sortedBlogs);
   };
   // at start get all blog objects
-  useEffect(() => {
-    async function fetchBlogs() {
-      const blogs = await blogService.getAll();
-      setBlogs(blogs);
-      sortBlogsAndUpdate(blogs);
-    }
-    fetchBlogs();
-  }, [user]);
+
+  async function fetchBlogs() {
+    const blogs = await blogService.getAll();
+    setBlogs(blogs);
+    sortBlogsAndUpdate(blogs);
+  }
 
   const handleCreate = async (title, author, url) => {
     // input blank check
@@ -90,7 +88,7 @@ const useBlogs = (user, setMessage, closeTheForm) => {
     }
   };
 
-  return { blogs, handleCreate, handleLike, handleRemove };
+  return { blogs, handleCreate, handleLike, handleRemove, fetchBlogs };
 };
 
 export default useBlogs;

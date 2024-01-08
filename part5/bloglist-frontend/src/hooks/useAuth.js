@@ -25,11 +25,13 @@ const useAuth = (setMessage) => {
 
       blogService.setToken(user.token);
       setUser(user);
+      return true;
     } catch (error) {
       setMessage("Wrong Credentials");
       setTimeout(() => {
         setMessage(null);
       }, 5000);
+      return false;
     }
   };
 

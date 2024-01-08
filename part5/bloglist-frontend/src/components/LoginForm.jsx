@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 // create LoginForm React Component
-const LoginForm = ({ onLogin }) => {
+const LoginForm = ({ onLogin, onFetchBlogs }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,9 +17,12 @@ const LoginForm = ({ onLogin }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await onLogin(username, password);
+    const isLogin = await onLogin(username, password);
     setUsername("");
     setPassword("");
+    if (isLogin) {
+      await onFetchBlogs();
+    }
   };
 
   return (
@@ -30,6 +33,7 @@ const LoginForm = ({ onLogin }) => {
           type="text"
           value={username}
           onChange={handleUsernameChange}
+          id="username"
         ></input>
       </div>
       <div>
@@ -38,10 +42,13 @@ const LoginForm = ({ onLogin }) => {
           type="text"
           value={password}
           onChange={handlePasswordChange}
+          id="password"
         ></input>
       </div>
 
-      <button type="submit">Login</button>
+      <button type="submit" id="submit-button">
+        Login
+      </button>
     </form>
   );
 };
