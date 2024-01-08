@@ -31,17 +31,17 @@ const CreateForm = ({ onCreate }) => {
     <form onSubmit={handleSubmit}>
       <div>
         <label>Title:</label>
-        <input type="text" value={title} onChange={handleTitleChange} placeholder="Atomic Habits"></input>
+        <input id="title" type="text" value={title} onChange={handleTitleChange} placeholder="Atomic Habits"></input>
       </div>
       <div>
         <label>Author:</label>
-        <input type="text" value={author} onChange={handleAuthorChange} placeholder="James Clear"></input>
+        <input id="author" type="text" value={author} onChange={handleAuthorChange} placeholder="James Clear"></input>
       </div>
       <div>
         <label>Url:</label>
-        <input type="text" value={url} onChange={handleUrlChange} placeholder="jamesclear.com"></input>
+        <input id="url" type="text" value={url} onChange={handleUrlChange} placeholder="jamesclear.com"></input>
       </div>
-      <button type="submit">Create</button>
+      <button id="create-blog-submit" type="submit">Create</button>
     </form>
   );
 };
