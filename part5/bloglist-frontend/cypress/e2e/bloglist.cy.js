@@ -57,6 +57,12 @@ describe("Blog website", () => {
         cy.get("#likesButton").click();
         cy.contains("likes 1");
       });
+
+      it("Remove blog", () => {
+        cy.contains("view").click();
+        cy.get("#removeButton").click();
+        cy.get(".blog").should("not.exist");
+      });
     });
   });
 });

@@ -33,7 +33,7 @@ const useBlogs = (user, setMessage, closeTheForm) => {
       };
       const createdBlog = await blogService.create({ title, author, url });
       //   console.log(createdBlog);
-      sortBlogsAndUpdate(blogs.concat(createdBlog));
+      await fetchBlogs();
 
       setMessage(
         `A new blog ${blogObject.title} by ${blogObject.author} added!`

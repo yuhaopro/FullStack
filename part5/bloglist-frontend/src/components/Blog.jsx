@@ -26,8 +26,8 @@ const Blog = ({ blog, onLike, onRemove }) => {
           <p id="likesView">likes {blog.likes}</p>
           <button id="likesButton" onClick={handleLike}>like</button>
           <p id="usernameView">{blog.user.username}</p>
-          <button onClick={handleRemove}>remove</button>
-          <button onClick={toggleVisiblity}>collapse</button>
+          <button id="removeButton" onClick={handleRemove}>remove</button>
+          <button id="collapseButton" onClick={toggleVisiblity}>collapse</button>
         </div>
       )}
     </div>
