@@ -31,15 +31,15 @@ const CreateForm = ({ onCreate }) => {
     <form onSubmit={handleSubmit}>
       <div>
         <label>Title:</label>
-        <input type="text" value={title} onChange={handleTitleChange}></input>
+        <input type="text" value={title} onChange={handleTitleChange} placeholder="Atomic Habits"></input>
       </div>
       <div>
         <label>Author:</label>
-        <input type="text" value={author} onChange={handleAuthorChange}></input>
+        <input type="text" value={author} onChange={handleAuthorChange} placeholder="James Clear"></input>
       </div>
       <div>
         <label>Url:</label>
-        <input type="text" value={url} onChange={handleUrlChange}></input>
+        <input type="text" value={url} onChange={handleUrlChange} placeholder="jamesclear.com"></input>
       </div>
       <button type="submit">Create</button>
     </form>

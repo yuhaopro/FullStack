@@ -17,15 +17,15 @@ const Blog = ({ blog, onLike, onRemove }) => {
     await onRemove(blog.id);
   };
   return (
-    <div>
+    <div className="blog">
       {blog.title} {blog.author}{" "}
-      {!visible && <button onClick={toggleVisiblity}>view</button>}
+      {!visible && <button id="viewButton" onClick={toggleVisiblity}>view</button>}
       {visible && (
         <div>
-          <p>{blog.url}</p>
-          <p>likes {blog.likes}</p>
-          <button onClick={handleLike}>like</button>
-          <p>{blog.user.username}</p>
+          <p id="urlView">{blog.url}</p>
+          <p id="likesView">likes {blog.likes}</p>
+          <button id="likesButton" onClick={handleLike}>like</button>
+          <p id="usernameView">{blog.user.username}</p>
           <button onClick={handleRemove}>remove</button>
           <button onClick={toggleVisiblity}>collapse</button>
         </div>
