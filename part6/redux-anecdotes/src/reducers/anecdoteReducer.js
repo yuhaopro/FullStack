@@ -27,8 +27,13 @@ const reducer = (state = initialState, action) => {
       return state.concat(action.payload);
     case "LIKE":
       return state.map((item) =>
-        item.id === action.payload.id ? { ...item, votes: item.votes + 1 } : item
+        item.id === action.payload.id
+          ? { ...item, votes: item.votes + 1 }
+          : item
       );
+    case "SORT":
+      const sortedArray = [...state].sort((a, b) => b.votes - a.votes);
+      return sortedArray;
     default:
       break;
   }
@@ -40,6 +45,12 @@ export const createAnecdote = (anecdote) => {
   return {
     type: "NEW",
     payload: asObject(anecdote),
+  };
+};
+
+export const sortAnecdote = () => {
+  return {
+    type: "SORT",
   };
 };
 
