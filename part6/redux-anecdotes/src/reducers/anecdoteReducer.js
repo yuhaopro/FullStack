@@ -1,3 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit";
+
 const anecdotesAtStart = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
@@ -19,46 +21,68 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-const reducer = (state = initialState, action) => {
-  // console.log("state now: ", state);
-  // console.log("action", action);
-  switch (action.type) {
-    case "NEW":
-      return state.concat(action.payload);
-    case "LIKE":
+const anecdoteSlice = createSlice({
+  name: "anecdotes",
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      return state.concat(asObject(action.payload));
+    },
+    likeAnecdote(state, action) {
       return state.map((item) =>
-        item.id === action.payload.id
+        item.id === action.payload
           ? { ...item, votes: item.votes + 1 }
           : item
       );
-    case "SORT":
-      const sortedArray = [...state].sort((a, b) => b.votes - a.votes);
-      return sortedArray;
-    default:
-      break;
-  }
+    },
+    sortAnecdote(state, action) {
+      return [...state].sort((a, b) => b.votes - a.votes);
+    },
+  },
+});
 
-  return state;
-};
+// const reducer = (state = initialState, action) => {
+//   // console.log("state now: ", state);
+//   // console.log("action", action);
+//   switch (action.type) {
+//     case "NEW":
+//       return state.concat(action.payload);
+//     case "LIKE":
+//       return state.map((item) =>
+//         item.id === action.payload.id
+//           ? { ...item, votes: item.votes + 1 }
+//           : item
+//       );
+//     case "SORT":
+//       const sortedArray = [...state].sort((a, b) => b.votes - a.votes);
+//       return sortedArray;
+//     default:
+//       break;
+//   }
 
-export const createAnecdote = (anecdote) => {
-  return {
-    type: "NEW",
-    payload: asObject(anecdote),
-  };
-};
+//   return state;
+// };
 
-export const sortAnecdote = () => {
-  return {
-    type: "SORT",
-  };
-};
+// export const createAnecdote = (anecdote) => {
+//   return {
+//     type: "NEW",
+//     payload: asObject(anecdote),
+//   };
+// };
 
-export const likeAnecdote = (id) => {
-  return {
-    type: "LIKE",
-    payload: { id },
-  };
-};
+// export const sortAnecdote = () => {
+//   return {
+//     type: "SORT",
+//   };
+// };
 
-export default reducer;
+// export const likeAnecdote = (id) => {
+//   return {
+//     type: "LIKE",
+//     payload: { id },
+//   };
+// };
+
+export const { createAnecdote, sortAnecdote, likeAnecdote } =
+  anecdoteSlice.actions;
+export default anecdoteSlice.reducer;
