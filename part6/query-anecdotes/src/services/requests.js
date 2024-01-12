@@ -11,7 +11,7 @@ export const createOne = async (anecdote) => {
     return response.data;
 }
 
-export const putOne = async (id, anecdote) => {
-    const response = await axios.put(`${baseUrl}/${id}`, anecdote);
+export const putOne = async (anecdote) => {
+    const response = await axios.put(`${baseUrl}/${anecdote.id}`, anecdote);
     return response.data;
 }
