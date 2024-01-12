@@ -5,11 +5,11 @@ import AnecdoteList from "./components/AnecdoteList";
 import Notification from "./components/Notification";
 import { useEffect } from "react";
 import api from "../services/api";
-import { setAnecdote } from "./reducers/anecdoteReducer";
+import { initializeAnecdotes } from "./reducers/anecdoteReducer";
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    api.getAll().then((res) => dispatch(setAnecdote(res)));
+    dispatch(initializeAnecdotes());
   }, []);
   return (
     <div>

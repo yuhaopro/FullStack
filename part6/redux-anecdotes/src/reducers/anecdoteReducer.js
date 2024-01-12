@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import api from "../../services/api";
 const anecdoteSlice = createSlice({
   name: "anecdotes",
   initialState: [],
   reducers: {
-    createAnecdote(state, action) {
+    appendAnecdote(state, action) {
       return state.concat(action.payload);
     },
-    likeAnecdote(state, action) {
+    voteAnecdote(state, action) {
       return state.map((item) =>
         item.id === action.payload ? { ...item, votes: item.votes + 1 } : item
       );
@@ -15,54 +15,39 @@ const anecdoteSlice = createSlice({
     sortAnecdote(state, action) {
       return [...state].sort((a, b) => b.votes - a.votes);
     },
-    setAnecdote(state, action) {
+    setAnecdotes(state, action) {
       return action.payload;
     },
   },
 });
 
-// const reducer = (state = initialState, action) => {
-//   // console.log("state now: ", state);
-//   // console.log("action", action);
-//   switch (action.type) {
-//     case "NEW":
-//       return state.concat(action.payload);
-//     case "LIKE":
-//       return state.map((item) =>
-//         item.id === action.payload.id
-//           ? { ...item, votes: item.votes + 1 }
-//           : item
-//       );
-//     case "SORT":
-//       const sortedArray = [...state].sort((a, b) => b.votes - a.votes);
-//       return sortedArray;
-//     default:
-//       break;
-//   }
-
-//   return state;
-// };
-
-// export const createAnecdote = (anecdote) => {
-//   return {
-//     type: "NEW",
-//     payload: asObject(anecdote),
-//   };
-// };
-
-// export const sortAnecdote = () => {
-//   return {
-//     type: "SORT",
-//   };
-// };
-
-// export const likeAnecdote = (id) => {
-//   return {
-//     type: "LIKE",
-//     payload: { id },
-//   };
-// };
-
-export const { createAnecdote, sortAnecdote, likeAnecdote, setAnecdote } =
+export const { appendAnecdote, sortAnecdote, voteAnecdote, setAnecdotes } =
   anecdoteSlice.actions;
+
+export const initializeAnecdotes = () => {
+  return async (dispatch) => {
+    const anecdotes = await api.getAll();
+    dispatch(setAnecdotes(anecdotes));
+  };
+};
+
+export const createAnecdotes = (anecdote) => {
+  return async (dispatch) => {
+    const newAnecdote = await api.createNew(anecdote);
+    dispatch(appendAnecdote(newAnecdote));
+    dispatch(sortAnecdote());
+  };
+};
+
+export const handleVoteAnecdote = (id) => {
+  return async (dispatch) => {
+    // get the anecdote based on id;
+    const anecdote = await api.getOne(id);
+    const object = { ...anecdote, votes: anecdote.votes + 1 };
+    await api.updateOne(id, object);
+    dispatch(voteAnecdote(id));
+    dispatch(sortAnecdote());
+  };
+};
+
 export default anecdoteSlice.reducer;

@@ -1,11 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import {
-  createAnecdote,
-  likeAnecdote,
-  sortAnecdote,
-  setAnecdote,
-} from "../reducers/anecdoteReducer";
+import { createAnecdotes } from "../reducers/anecdoteReducer";
 import {
   notificationChange,
   notificationReset,
@@ -20,9 +15,7 @@ const AnecdoteForm = () => {
     const content = event.target.create.value;
 
     event.target.create.value = "";
-    const newAnecdote = await api.createNew(content);
-    dispatch(createAnecdote(newAnecdote));
-    dispatch(sortAnecdote());
+    dispatch(createAnecdotes(content));
     dispatch(notificationChange(content));
     setTimeout(() => {
       dispatch(notificationReset());
