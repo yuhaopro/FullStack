@@ -5,7 +5,9 @@ export const notificationReducer = (state, action) => {
     case "CREATE":
       return "anecdote " + `'${action.payload}'` + " created!";
     case "VOTE":
-      return "anecdote " + `'${action.payload}'` + " voted!"; 
+      return "anecdote " + `'${action.payload}'` + " voted!";
+    case "ERROR":
+      return "anecdote must be 5 characters!";
     case "RESET":
       return null;
     default:
@@ -30,11 +32,11 @@ export const NotificationContextProvider = (props) => {
 export const useNotificationValue = () => {
   const notificationAndDispatch = useContext(notificationContext);
   return notificationAndDispatch[0];
-}
+};
 
 export const useNotificationDispatch = () => {
   const notificationAndDispatch = useContext(notificationContext);
   return notificationAndDispatch[1];
-}
+};
 
 export default notificationContext;
