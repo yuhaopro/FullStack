@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import api from "../../services/api";
+import api from "../services/api";
 const anecdoteSlice = createSlice({
   name: "anecdotes",
   initialState: [],
