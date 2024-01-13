@@ -15,6 +15,15 @@ const CreateNew = (props) => {
       votes: 0,
     });
   };
+  const { onReset: onResetContent, ...contentInput } = content;
+  const { onReset: onResetAuthor, ...authorInput } = author;
+  const { onReset: onResetInfo, ...infoInput } = info;
+
+  const handleReset = () => {
+    onResetContent();
+    onResetAuthor();
+    onResetInfo();
+  };
 
   return (
     <div>
@@ -22,17 +31,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name="content" {...content} />
+          <input name="content" {...contentInput} />
         </div>
         <div>
           author
-          <input name="author" {...author} />
+          <input name="author" {...authorInput} />
         </div>
         <div>
           url for more info
-          <input name="info" {...info} />
+          <input name="info" {...infoInput} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button onClick={handleReset} type="button">reset</button>
       </form>
     </div>
   );
