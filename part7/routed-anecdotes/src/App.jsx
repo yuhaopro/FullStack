@@ -5,6 +5,7 @@ import {
   Route,
   Link,
   useMatch,
+  useNavigate,
 } from "react-router-dom";
 import CreateNew from "./screens/Create";
 import About from "./screens/About";
@@ -34,11 +35,18 @@ const App = () => {
     },
   ]);
 
-  const [notification, setNotification] = useState("");
+  const [notification, setNotification] = useState(null);
+
+  const navigate = useNavigate();
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
+    navigate("/");
+    setNotification(`a new anecdote '${anecdote.content} has been created!`);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -74,7 +82,7 @@ const App = () => {
           about
         </Link>
       </div>
-
+      {notification && <div>{notification}</div>}
       <Routes>
         <Route
           path={"/"}
