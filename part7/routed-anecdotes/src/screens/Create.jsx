@@ -15,6 +15,8 @@ const CreateNew = (props) => {
       votes: 0,
     });
   };
+
+  // destructure so i can still use spread syntax for input tag
   const { onReset: onResetContent, ...contentInput } = content;
   const { onReset: onResetAuthor, ...authorInput } = author;
   const { onReset: onResetInfo, ...infoInput } = info;
