@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 // create LoginForm React Component
-const LoginForm = ({ onLogin, onFetchBlogs }) => {
+const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,9 +20,6 @@ const LoginForm = ({ onLogin, onFetchBlogs }) => {
     const isLogin = await onLogin(username, password);
     setUsername("");
     setPassword("");
-    if (isLogin) {
-      await onFetchBlogs();
-    }
   };
 
   return (
