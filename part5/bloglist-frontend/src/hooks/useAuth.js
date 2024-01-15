@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
+import { useDispatch } from "react-redux";
+import { notifyFor } from "../reducers/notificationReducer";
 
-const useAuth = (setMessage) => {
+const useAuth = () => {
   const [user, setUser] = useState(null);
-
+  const dispatch = useDispatch();
   // get local storage user session if it exists for the first time.
   useEffect(() => {
     const userJSON = window.localStorage.getItem("user");
@@ -27,10 +29,8 @@ const useAuth = (setMessage) => {
       setUser(user);
       return true;
     } catch (error) {
-      setMessage("Wrong Credentials");
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      // notification for wrong credentials
+      dispatch(notifyFor("Wrong Credentials!"));
       return false;
     }
   };

@@ -5,10 +5,10 @@ import useAuth from "./hooks/useAuth";
 import useBlogs from "./hooks/useBlogs";
 import { useState, useRef } from "react";
 import Togglable from "./components/Togglable";
+import Notification from "./components/Notification";
 
 const App = () => {
-  const [message, setMessage] = useState(null);
-  const { user, handleLogin, handleLogOut } = useAuth(setMessage);
+  const { user, handleLogin, handleLogOut } = useAuth();
   const createFormRef = useRef();
   const closeCreateForm = () => {
     if (createFormRef.current && createFormRef.current.toggleVisiblity) {
@@ -16,10 +16,10 @@ const App = () => {
     }
   };
   const { blogs, handleCreate, handleLike, handleRemove, fetchBlogs } =
-    useBlogs(user, setMessage, closeCreateForm);
+    useBlogs(user, closeCreateForm);
   return (
     <div>
-      {message && <p>{message}</p>}
+      <Notification />
       {user === null ? (
         <LoginForm onLogin={handleLogin} onFetchBlogs={fetchBlogs} />
       ) : (

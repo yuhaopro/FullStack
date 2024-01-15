@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import blogService from "../services/blogs";
-const useBlogs = (user, setMessage, closeTheForm) => {
-  const [blogs, setBlogs] = useState([]);
+import { useDispatch } from "react-redux";
+import { notifyFor } from "../reducers/notificationReducer";
 
+const useBlogs = (user, closeTheForm) => {
+  const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
   const sortBlogsAndUpdate = (blogs) => {
     const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
     setBlogs(sortedBlogs);
@@ -18,10 +21,8 @@ const useBlogs = (user, setMessage, closeTheForm) => {
   const handleCreate = async (title, author, url) => {
     // input blank check
     if (title === "" || author === "" || url === "") {
-      setMessage("Make sure all fields are filled");
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      // TODO: set notification all fields filled
+      dispatch(notifyFor("Field are not filled"));
       return;
     }
     try {
@@ -35,16 +36,15 @@ const useBlogs = (user, setMessage, closeTheForm) => {
       //   console.log(createdBlog);
       await fetchBlogs();
 
-      setMessage(
-        `A new blog ${blogObject.title} by ${blogObject.author} added!`
+      dispatch(
+        notifyFor(
+          `A new blog ${blogObject.title} by ${blogObject.author} added!`
+        )
       );
       // close the create form
       closeTheForm();
     } catch (error) {
-      setMessage(error);
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      dispatch(notifyFor(error));
     }
   };
   const handleLike = async (originalLikes, id) => {
@@ -60,10 +60,7 @@ const useBlogs = (user, setMessage, closeTheForm) => {
       );
       sortBlogsAndUpdate(updatedBlogs);
     } catch (error) {
-      setMessage(error);
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      dispatch(notifyFor(error));
     }
   };
 
@@ -72,8 +69,7 @@ const useBlogs = (user, setMessage, closeTheForm) => {
       const response = await blogService.deleteBlog(id);
       console.log(response);
       if (response.error) {
-        console.log(response.error);
-        setMessage(response.error);
+        dispatch(notifyFor(response.error));
         return;
       } else {
         const updatedBlogs = blogs.filter((blog) => blog.id !== id);
@@ -81,10 +77,7 @@ const useBlogs = (user, setMessage, closeTheForm) => {
         sortBlogsAndUpdate(updatedBlogs);
       }
     } catch (error) {
-      setMessage(error);
-      setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      dispatch(notifyFor(error));
     }
   };
 
