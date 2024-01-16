@@ -4,7 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 import { useDispatch } from "react-redux";
 import { notifyFor } from "../reducers/notificationReducer";
+import { useNavigate } from "react-router";
 const CreateForm = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // useState here since only belonging to this component
   const [title, setTitle] = useState("");
@@ -22,7 +24,6 @@ const CreateForm = () => {
       setUrl("");
       // trigger a refetch
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
-      
     },
   });
 
@@ -42,6 +43,7 @@ const CreateForm = () => {
     event.preventDefault();
 
     newBlogMutation.mutate({ title, author, url });
+    navigate("/blogs");
   };
 
   return (

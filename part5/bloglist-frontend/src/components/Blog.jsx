@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import LikeButton from "./LikeButton";
+import DeleteButton from "./DeleteButton";
 
 const Blog = ({ blog }) => {
   console.log("====================================");
@@ -20,8 +21,8 @@ const Blog = ({ blog }) => {
         <p id="urlView">{blog.url}</p>
         <p id="likesView">likes {blog.likes}</p>
         <LikeButton blog={blog}></LikeButton>
-        <p id="usernameView">{blog.user.username}</p>
-
+        <p id="usernameView">Added by {blog.user.username}</p>
+        <DeleteButton blog={blog}></DeleteButton>
       </div>
     </div>
   );
