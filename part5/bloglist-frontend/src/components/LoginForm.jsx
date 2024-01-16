@@ -1,8 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, setUser } from "../reducers/userReducer";
+import { useNavigate } from "react-router";
+import blogService from "../services/blogs";
 
 // create LoginForm React Component
-const LoginForm = ({ onLogin }) => {
+const LoginForm = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const userJSON = window.localStorage.getItem("user");
+    if (userJSON) {
+      const user = JSON.parse(userJSON);
+      dispatch(setUser(user));
+      blogService.setToken(user.token);
+      navigate("/blogs");
+    }
+  }, []);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,7 +33,9 @@ const LoginForm = ({ onLogin }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const isLogin = await onLogin(username, password);
+    // login user
+    // set the received object to user state
+    dispatch(loginUser({ username, password }));
     setUsername("");
     setPassword("");
   };
@@ -48,10 +66,6 @@ const LoginForm = ({ onLogin }) => {
       </button>
     </form>
   );
-};
-
-LoginForm.propTypes = {
-  onLogin: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
