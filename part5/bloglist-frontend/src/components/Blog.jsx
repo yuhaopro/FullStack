@@ -1,34 +1,28 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import LikeButton from "./LikeButton";
 
-const Blog = ({ blog, onLike, onRemove }) => {
-  const [visible, setVisible] = useState(false);
+const Blog = ({ blog }) => {
+  console.log("====================================");
+  console.log(blog);
+  console.log("====================================");
+  if (!blog) {
+    return <div>Something went wrong...</div>;
+  }
 
-  const toggleVisiblity = () => {
-    // show the blog url, likes and user who posted
-    setVisible(!visible);
-  };
-
-  const handleLike = async () => {
-    await onLike(blog.likes, blog.id);
-  };
-
-  const handleRemove = async () => {
-    await onRemove(blog.id);
-  };
   return (
     <div className="blog">
-      {blog.title} {blog.author}
-      {visible && (
-        <div>
-          <p id="urlView">{blog.url}</p>
-          <p id="likesView">likes {blog.likes}</p>
-          <button id="likesButton" onClick={handleLike}>like</button>
-          <p id="usernameView">{blog.user.username}</p>
-          <button id="removeButton" onClick={handleRemove}>remove</button>
-          <button id="collapseButton" onClick={toggleVisiblity}>collapse</button>
-        </div>
-      )}
+      <h2>
+        {blog.title} by {blog.author}
+      </h2>
+
+      <div>
+        <p id="urlView">{blog.url}</p>
+        <p id="likesView">likes {blog.likes}</p>
+        <LikeButton blog={blog}></LikeButton>
+        <p id="usernameView">{blog.user.username}</p>
+
+      </div>
     </div>
   );
 };
@@ -44,9 +38,7 @@ Blog.propTypes = {
       id: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
     }),
-  }).isRequired,
-  onLike: PropTypes.func.isRequired,
-  onRemove: PropTypes.func.isRequired,
+  }),
 };
 
 export default Blog;

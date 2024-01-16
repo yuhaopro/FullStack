@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import blogService from "../services/blogs";
+import { Link } from "react-router-dom";
 export const BlogList = () => {
   // get the blogList state from server
   // use react query
@@ -30,10 +31,13 @@ export const BlogList = () => {
   // TODO: to create Link tags for Routing
   return (
     <div>
+      <h2>Your Blogs</h2>
       {blogList.map((blog) => {
         return (
           <div key={blog.id}>
-            {blog.title} {blog.author}
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title} {blog.author}
+            </Link>
           </div>
         );
       })}
