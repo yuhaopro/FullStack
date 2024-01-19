@@ -7,9 +7,7 @@ import Blog from "./components/Blog";
 import { useQuery } from "@tanstack/react-query";
 import blogService from "./services/blogs";
 import LogOut from "./components/LogOut";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "./reducers/userReducer";
 
 const App = () => {
   // get user data from browser;
