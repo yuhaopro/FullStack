@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginUser, setUser } from "../reducers/userReducer";
 import { useNavigate } from "react-router";
 import blogService from "../services/blogs";
